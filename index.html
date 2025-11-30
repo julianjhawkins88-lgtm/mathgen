@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KidsNeed · Mathe-Abenteuer 🌟</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      max-width: 520px;
+      width: 100%;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e8ecf1;
+    }
+    
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin: 0 0 6px 0;
+    }
+    
+    .subtitle {
+      font-size: 0.875rem;
+      color: #718096;
+      margin: 0;
+    }
+    
+    .grade-section {
+      margin-bottom: 32px;
+    }
+    
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #718096;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .grade-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    
+    .grade-btn {
+      background: #f7fafc;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 12px 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #4a5568;
+    }
+    
+    .grade-btn:hover {
+      background: #edf2f7;
+    }
+    
+    .grade-btn.active {
+      background: #3182ce;
+      border-color: #3182ce;
+      color: white;
+    }
+    
+    .grade-emoji {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    
+    .grade-label {
+      font-size: 0.8rem;
+    }
+    
+    .question-section {
+      margin-bottom: 32px;
+    }
+    
+    .question-card {
+      background: #fafbfc;
+      border: 1px solid #e8ecf1;
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .question-emoji {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    
+    .question-text {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #1a202c;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    
+    .skill-badge {
+      display: inline-block;
+      background: transparent;
+      color: #718096;
+      padding: 0;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .answers-section {
+      margin-bottom: 24px;
+    }
+    
+    .answers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    
+    .answer-btn {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px 16px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2d3748;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    
+    .answer-btn:hover:not(.correct):not(.incorrect) {
+      border-color: #cbd5e0;
+      background: #fafbfc;
+    }
+    
+    .answer-btn.correct {
+      background: #48bb78;
+      border-color: #48bb78;
+      color: white;
+    }
+    
+    .answer-btn.incorrect {
+      background: #fc8181;
+      border-color: #fc8181;
+      color: white;
+    }
+    
+    .answer-btn.correct::after,
+    .answer-btn.incorrect::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .answer-btn.correct::after {
+      content: '✓';
+      color: #48bb78;
+    }
+    
+    .answer-btn.incorrect::after {
+      content: '✗';
+      color: #fc8181;
+    }
+    
+    .feedback {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #718096;
+      text-align: center;
+      min-height: 20px;
+    }
+    
+    .feedback.success {
+      color: #38a169;
+    }
+    
+    .feedback.error {
+      color: #e53e3e;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      flex: 1;
+      background: #3182ce;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 0.938rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .btn:hover {
+      background: #2c5aa0;
+    }
+    
+    .btn-icon {
+      background: #edf2f7;
+      color: #4a5568;
+      flex: 0 0 auto;
+      min-width: 48px;
+      padding: 14px;
+    }
+    
+    .btn-icon:hover {
+      background: #e2e8f0;
+    }
+    
+    .btn-icon.active {
+      background: #48bb78;
+      color: white;
+    }
+    
+    .btn-icon.active:hover {
+      background: #38a169;
+    }
+    
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+    
+    @media (max-width: 600px) {
+      .card {
+        padding: 28px 24px;
+      }
+      
+      .grade-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .question-text {
+        font-size: 1.5rem;
+      }
+      
+      .answer-btn {
+        padding: 16px 12px;
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1 class="title">Mathe üben 📐</h1>
+        <p class="subtitle">Wähle deine Klasse und löse die Aufgaben in Ruhe</p>
+      </div>
+
+      <div class="grade-section">
+        <div class="section-label">Wähle deine Klassenstufe</div>
+        <div class="grade-buttons" id="gradeButtons">
+          <button class="grade-btn active" data-grade="1">
+            <span class="grade-emoji">🧸</span>
+            <div>1. Klasse</div>
+          </button>
+          <button class="grade-btn" data-grade="2">
+            <span class="grade-emoji">📘</span>
+            <div>2. Klasse</div>
+          </button>
+          <button class="grade-btn" data-grade="3">
+            <span class="grade-emoji">🚀</span>
+            <div>3. Klasse</div>
+          </button>
+          <button class="grade-btn" data-grade="4">
+            <span class="grade-emoji">🧠</span>
+            <div>4. Klasse</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-emoji" id="questionEmoji">🎯</div>
+        <div class="question-text" id="questionText">Drücke auf "Neue Aufgabe"</div>
+        <div class="skill-badge" id="skillBadge">Bereit zum Üben</div>
+      </div>
+
+      <div class="answers-grid" id="answersGrid"></div>
+
+      <div class="feedback" id="feedback">
+        Drücke auf "Neue Aufgabe" um zu beginnen
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="toggleSpeech">
+          <span class="btn-text" id="speechButtonText">🔊 Ton an</span>
+        </button>
+        <button class="btn" id="nextButton">
+          <span class="btn-text">Neue Aufgabe</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- Sprachausgabe-Funktion ----
+    let speechEnabled = true;
+    let currentUtterance = null;
+    let selectedVoice = null;
+
+    // Bessere Stimme auswählen
+    function selectBestVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Prioritätenliste für deutsche Stimmen (beste zuerst)
+      const voicePriorities = [
+        // Petra bevorzugen
+        v => v.name.includes('Petra') && v.lang.includes('de'),
+        v => v.name.includes('Petra'),
+        // Google Stimmen (sehr natürlich)
+        v => v.name.includes('Google') && v.lang.includes('de') && v.name.includes('Female'),
+        v => v.name.includes('Google') && v.lang.includes('de'),
+        // Microsoft Neural Stimmen (sehr gut)
+        v => v.name.includes('Katja') || v.name.includes('Hedda'),
+        v => v.name.includes('Microsoft') && v.lang.includes('de') && v.name.includes('Female'),
+        // Apple Stimmen
+        v => v.name.includes('Anna') && v.lang.includes('de'),
+        // Allgemeine deutsche weibliche Stimmen
+        v => v.lang.startsWith('de-DE') && v.name.toLowerCase().includes('female'),
+        v => v.lang.startsWith('de') && v.name.toLowerCase().includes('female'),
+        // Fallback: Alle deutschen Stimmen
+        v => v.lang.startsWith('de-DE'),
+        v => v.lang.startsWith('de'),
+      ];
+      
+      for (const priorityCheck of voicePriorities) {
+        const voice = voices.find(priorityCheck);
+        if (voice) {
+          console.log('Gewählte Stimme:', voice.name, voice.lang);
+          return voice;
+        }
+      }
+      
+      console.log('Keine deutsche Stimme gefunden, nutze Standard');
+      return null;
+    }
+
+    // Verbesserte Sprachausgabe mit SSML-ähnlichen Pausen
+    function speak(text, priority = false, options = {}) {
+      if (!speechEnabled) return;
+      
+      // Bei wichtigen Ansagen vorherige Ausgabe stoppen
+      if (priority && currentUtterance) {
+        window.speechSynthesis.cancel();
+      }
+      
+      // Prüfen ob Browser Sprachausgabe unterstützt
+      if (!('speechSynthesis' in window)) {
+        console.log('Sprachausgabe wird nicht unterstützt');
+        return;
+      }
+      
+      // Pausen und Betonung durch Kommas hinzufügen
+      let enhancedText = text;
+      
+      currentUtterance = new SpeechSynthesisUtterance(enhancedText);
+      
+      // Langsamere und weichere Einstellungen (20% langsamer)
+      currentUtterance.rate = options.rate || 0.76; // Von 0.95 auf 0.76 (20% langsamer)
+      currentUtterance.pitch = options.pitch || 1.0; // Natürlicher, weniger hoch
+      currentUtterance.volume = options.volume || 0.85; // Etwas leiser für weicheren Klang
+      currentUtterance.lang = 'de-DE';
+      
+      // Beste Stimme verwenden
+      if (!selectedVoice) {
+        selectedVoice = selectBestVoice();
+      }
+      
+      if (selectedVoice) {
+        currentUtterance.voice = selectedVoice;
+      }
+      
+      window.speechSynthesis.speak(currentUtterance);
+    }
+
+    function speakQuestion(question) {
+      let spokenText = question.prompt;
+      
+      // Mathematische Symbole in gesprochene Sprache umwandeln
+      spokenText = spokenText
+        .replace(/\+/g, ' plus ')
+        .replace(/−/g, ' minus ')
+        .replace(/×/g, ' mal ')
+        .replace(/÷/g, ' geteilt durch ')
+        .replace(/=/g, ' gleich ')
+        .replace(/\?/g, '')
+        .replace(/__/g, '');
+      
+      // Zahlen und Operatoren mit kleinen Pausen trennen für bessere Verständlichkeit
+      spokenText = spokenText.replace(/(\d+)\s+(plus|minus|mal|geteilt durch)\s+(\d+)/g, '$1, $2, $3');
+      
+      // Natürlichere Formulierungen mit Variation
+      const questionIntros = [
+        `${spokenText}`,
+        `Rechne, ${spokenText}`,
+        `Wie viel ist ${spokenText}`,
+      ];
+      
+      const questionText = questionIntros[Math.floor(Math.random() * questionIntros.length)];
+      
+      // Noch langsamere Geschwindigkeit für Aufgaben (20% langsamer)
+      speak(questionText, true, { rate: 0.72, pitch: 1.0 });
+    }
+
+    function speakFeedback(isCorrect) {
+      if (isCorrect) {
+        const positiveMessages = [
+          "Richtig!",
+          "Sehr gut!",
+          "Prima!",
+          "Das stimmt!",
+          "Genau!",
+          "Super!"
+        ];
+        // Weicher und sanfter für positive Rückmeldung
+        speak(positiveMessages[Math.floor(Math.random() * positiveMessages.length)], false, { 
+          rate: 0.8, 
+          pitch: 1.0 
+        });
+      } else {
+        const encouragementMessages = [
+          "Die grüne Antwort ist richtig.",
+          "Schau mal, welche Antwort grün ist.",
+          "Probiere die nächste Aufgabe.",
+          "Die richtige Lösung ist grün markiert."
+        ];
+        // Sehr ruhig und einfühlsam bei falscher Antwort
+        speak(encouragementMessages[Math.floor(Math.random() * encouragementMessages.length)], false, {
+          rate: 0.68,
+          pitch: 0.95
+        });
+      }
+    }
+
+    // Stimmen laden und beste Stimme auswählen
+    function initVoices() {
+      const voices = window.speechSynthesis.getVoices();
+      console.log('Verfügbare Stimmen:', voices.map(v => `${v.name} (${v.lang})`).join(', '));
+      selectedVoice = selectBestVoice();
+    }
+    
+    // Wichtig: Stimmen müssen erst geladen werden
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+      window.speechSynthesis.onvoiceschanged = initVoices;
+    }
+    
+    // Mehrfach versuchen, da Stimmen manchmal verzögert laden
+    setTimeout(initVoices, 100);
+    setTimeout(initVoices, 500);
+    setTimeout(initVoices, 1000);
+
+    // ---- Math-Generator ----
+    const MATH_SKILLS = {
+      1: [
+        { id: "add_to_10",      type: "add",  max: 10,   emoji: "➕", label: "Plus bis 10" },
+        { id: "add_to_20",      type: "add",  max: 20,   emoji: "➕", label: "Plus bis 20" },
+        { id: "sub_to_10",      type: "sub",  max: 10,   emoji: "➖", label: "Minus bis 10" },
+        { id: "sub_to_20",      type: "sub",  max: 20,   emoji: "➖", label: "Minus bis 20" },
+        { id: "compare_to_20",  type: "cmp",  max: 20,   emoji: "⚖️", label: "Größer/Kleiner" }
+      ],
+      2: [
+        { id: "add_to_100",     type: "add",  max: 100,  emoji: "➕", label: "Plus bis 100" },
+        { id: "sub_to_100",     type: "sub",  max: 100,  emoji: "➖", label: "Minus bis 100" },
+        { id: "bridge_10_100",  type: "bridge10", max: 100, emoji: "🎯", label: "Über den Zehner" },
+        { id: "mul_small",      type: "mul",  max: 5,    emoji: "✖️", label: "Einfache Malreihen" },
+        { id: "cmp_to_100",     type: "cmp",  max: 100,  emoji: "⚖️", label: "Größer/Kleiner" }
+      ],
+      3: [
+        { id: "mul_to_10",      type: "mul",  max: 10,   emoji: "✖️", label: "Malreihen 1–10" },
+        { id: "div_to_10",      type: "div",  max: 10,   emoji: "➗", label: "Geteilt durch" },
+        { id: "mix_add_sub_100",type: "mix",  max: 100,  emoji: "🔢", label: "Gemischte Aufgaben" },
+        { id: "cmp_to_1000",    type: "cmp",  max: 1000, emoji: "⚖️", label: "Zahlen vergleichen" }
+      ],
+      4: [
+        { id: "mul_big",        type: "mul",  max: 20,   emoji: "✖️", label: "Größere Produkte" },
+        { id: "div_exact",      type: "div",  max: 12,   emoji: "➗", label: "Exakte Division" },
+        { id: "mix_4ops",       type: "mix4", max: 500,  emoji: "🔢", label: "Vier Grundrechenarten" },
+        { id: "cmp_to_10000",   type: "cmp",  max: 10000,emoji: "⚖️", label: "Große Zahlen" }
+      ]
+    };
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pickRandom(arr) {
+      return arr[randInt(0, arr.length - 1)];
+    }
+
+    function buildOptions(correct) {
+      const options = [];
+      const used = new Set([correct]);
+      const deltas = [-3, -2, -1, 1, 2, 3, 4, 5];
+      options.push(correct);
+
+      while (options.length < 4) {
+        const delta = pickRandom(deltas);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        if (!used.has(candidate)) {
+          used.add(candidate);
+          options.push(candidate);
+        }
+      }
+
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = randInt(0, i);
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+
+      const correctIndex = options.indexOf(correct);
+      return { options: options.map(String), correctIndex };
+    }
+
+    function generateAdd(skill) {
+      const a = randInt(0, skill.max);
+      const b = randInt(0, skill.max - a);
+      const correct = a + b;
+      const { options, correctIndex } = buildOptions(correct);
+      return {
+        emoji: skill.emoji,
+        prompt: `${a} + ${b} = ?`,
+        options,
+        correctIndex
+      };
+    }
+
+    function generateSub(skill) {
+      const a = randInt(0, skill.max);
+      const b = randInt(0, a);
+      const correct = a - b;
+      const { options, correctIndex } = buildOptions(correct);
+      return {
+        emoji: skill.emoji,
+        prompt: `${a} − ${b} = ?`,
+        options,
+        correctIndex
+      };
+    }
+
+    function generateCompare(skill) {
+      const a = randInt(0, skill.max);
+      let b = randInt(0, skill.max);
+      while (b === a) b = randInt(0, skill.max);
+      const sign = a > b ? ">" : "<";
+      const options = ["<", ">", "="];
+      const correctIndex = options.indexOf(sign);
+      return {
+        emoji: skill.emoji,
+        prompt: `${a} __ ${b}`,
+        options,
+        correctIndex
+      };
+    }
+
+    function generateBridge10(skill) {
+      const add = Math.random() < 0.5;
+      if (add) {
+        const first = randInt(5, 19);
+        const second = randInt(2, 9);
+        const sum = first + second;
+        if (sum > skill.max) return generateBridge10(skill);
+        const { options, correctIndex } = buildOptions(sum);
+        return {
+          emoji: skill.emoji,
+          prompt: `${first} + ${second} = ?`,
+          options,
+          correctIndex
+        };
+      } else {
+        const minuend = randInt(11, skill.max);
+        const subtrahend = randInt(2, 9);
+        if (minuend - subtrahend < 0) return generateBridge10(skill);
+        const diff = minuend - subtrahend;
+        const { options, correctIndex } = buildOptions(diff);
+        return {
+          emoji: skill.emoji,
+          prompt: `${minuend} − ${subtrahend} = ?`,
+          options,
+          correctIndex
+        };
+      }
+    }
+
+    function generateMul(skill) {
+      const a = randInt(1, skill.max);
+      const b = randInt(1, skill.max);
+      const correct = a * b;
+      const { options, correctIndex } = buildOptions(correct);
+      return {
+        emoji: skill.emoji,
+        prompt: `${a} × ${b} = ?`,
+        options,
+        correctIndex
+      };
+    }
+
+    function generateDiv(skill) {
+      const divisor = randInt(1, skill.max);
+      const quotient = randInt(1, skill.max);
+      const dividend = divisor * quotient;
+      const { options, correctIndex } = buildOptions(quotient);
+      return {
+        emoji: skill.emoji,
+        prompt: `${dividend} ÷ ${divisor} = ?`,
+        options,
+        correctIndex
+      };
+    }
+
+    function generateMix(skill) {
+      const add = Math.random() < 0.5;
+      const subSkill = { ...skill, type: "sub" };
+      const addSkill = { ...skill, type: "add" };
+      return add ? generateAdd(addSkill) : generateSub(subSkill);
+    }
+
+    function generateMix4(skill) {
+      const types = ["add", "sub", "mul", "div"];
+      const t = pickRandom(types);
+      if (t === "add") return generateAdd(skill);
+      if (t === "sub") return generateSub(skill);
+      if (t === "mul") return generateMul(skill);
+      return generateDiv({ ...skill, max: 12 });
+    }
+
+    function generateMathTask(grade) {
+      const gradeKey = Math.min(Math.max(grade, 1), 4);
+      const skills = MATH_SKILLS[gradeKey] || MATH_SKILLS[1];
+      const skill = pickRandom(skills);
+
+      let base;
+      switch (skill.type) {
+        case "add": base = generateAdd(skill); break;
+        case "sub": base = generateSub(skill); break;
+        case "cmp": base = generateCompare(skill); break;
+        case "bridge10": base = generateBridge10(skill); break;
+        case "mul": base = generateMul(skill); break;
+        case "div": base = generateDiv(skill); break;
+        case "mix": base = generateMix(skill); break;
+        case "mix4": base = generateMix4(skill); break;
+        default: base = generateAdd({ type: "add", max: 20, emoji: "➕" });
+      }
+
+      return {
+        emoji: base.emoji,
+        prompt: base.prompt,
+        options: base.options,
+        correctIndex: base.correctIndex,
+        meta: {
+          skillId: skill.id,
+          skillLabel: skill.label,
+          grade: gradeKey
+        }
+      };
+    }
+
+    // ---- UI Logic ----
+    let currentGrade = 1;
+    let currentQuestion = null;
+    let hasAnswered = false;
+
+    const gradeButtons = document.getElementById('gradeButtons');
+    const questionEmoji = document.getElementById('questionEmoji');
+    const questionText = document.getElementById('questionText');
+    const skillBadge = document.getElementById('skillBadge');
+    const answersGrid = document.getElementById('answersGrid');
+    const feedback = document.getElementById('feedback');
+    const nextButton = document.getElementById('nextButton');
+    const toggleSpeechButton = document.getElementById('toggleSpeech');
+    const speechButtonText = document.getElementById('speechButtonText');
+
+    const encouragingMessages = [
+      "Richtig! Gut gemacht.",
+      "Das stimmt! Prima.",
+      "Sehr gut!",
+      "Genau richtig.",
+      "Stimmt genau!"
+    ];
+
+    const tryAgainMessages = [
+      "Schau dir die richtige Lösung an.",
+      "Die richtige Antwort ist markiert.",
+      "Fast! Versuch es bei der nächsten.",
+      "Nicht ganz richtig. Weiter so!"
+    ];
+
+    gradeButtons.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-grade]');
+      if (!btn) return;
+      
+      currentGrade = Number(btn.dataset.grade) || 1;
+      gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      feedback.className = 'feedback';
+      feedback.textContent = `Klasse ${currentGrade} gewählt.`;
+    });
+
+    function renderQuestion() {
+      currentQuestion = generateMathTask(currentGrade);
+      hasAnswered = false;
+      
+      questionEmoji.textContent = currentQuestion.emoji || "🎯";
+      questionText.textContent = currentQuestion.prompt;
+      skillBadge.textContent = `${currentQuestion.meta.skillLabel} (Klasse ${currentQuestion.meta.grade})`;
+      
+      answersGrid.innerHTML = '';
+      feedback.className = 'feedback';
+      feedback.textContent = 'Wähle die richtige Antwort.';
+
+      currentQuestion.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => handleAnswer(idx));
+        answersGrid.appendChild(btn);
+      });
+      
+      // Aufgabe vorlesen
+      setTimeout(() => speakQuestion(currentQuestion), 300);
+    }
+
+    function handleAnswer(selectedIndex) {
+      if (hasAnswered) return;
+      hasAnswered = true;
+
+      const answerButtons = answersGrid.querySelectorAll('.answer-btn');
+      const isCorrect = selectedIndex === currentQuestion.correctIndex;
+
+      answerButtons.forEach((btn, idx) => {
+        if (idx === currentQuestion.correctIndex) {
+          btn.classList.add('correct');
+        }
+      });
+
+      if (!isCorrect) {
+        answerButtons[selectedIndex].classList.add('incorrect');
+        feedback.className = 'feedback error';
+        feedback.textContent = pickRandom(tryAgainMessages);
+      } else {
+        feedback.className = 'feedback success';
+        feedback.textContent = pickRandom(encouragingMessages);
+      }
+      
+      // Feedback vorlesen
+      setTimeout(() => speakFeedback(isCorrect), 400);
+    }
+
+    nextButton.addEventListener('click', renderQuestion);
+    
+    toggleSpeechButton.addEventListener('click', () => {
+      speechEnabled = !speechEnabled;
+      if (speechEnabled) {
+        toggleSpeechButton.classList.add('active');
+        speechButtonText.textContent = '🔊 Ton an';
+        speak("Sprachausgabe ist jetzt eingeschaltet.");
+      } else {
+        toggleSpeechButton.classList.remove('active');
+        speechButtonText.textContent = '🔇 Ton aus';
+        window.speechSynthesis.cancel();
+      }
+    });
+    
+    // Sprachausgabe ist standardmäßig an
+    toggleSpeechButton.classList.add('active');
+    
+    // Willkommensnachricht beim Laden
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        speak("Hallo! Wähle deine Klasse und drücke auf Neue Aufgabe.");
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
